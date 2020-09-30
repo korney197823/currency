@@ -14,10 +14,23 @@
         </v-tab>
       </v-tabs>
     </header>
+    <div class="input-container">
+      <v-text-field
+          v-model="count"
+          class="text-input"
+      ></v-text-field>
+      <span class="input-label">{{$data.base}}</span>
+    </div>
+
     <v-tabs-items v-model="tab">
       <v-tab-item v-for="item in $data.result" :key="item[0]">
         <v-card v-for="item in $data.result" :key="item[0]">
-          <v-card-text>{{ item[1] }}</v-card-text>
+          <v-card-text>
+            {{$data.count}} {{$data.base}} =
+          </v-card-text>
+          <v-card-text>
+            {{ item[1] }}
+          </v-card-text>
         </v-card>
       </v-tab-item>
     </v-tabs-items>
@@ -29,7 +42,7 @@ export default {
   name: "CurrentTab",
   data() {
     return {
-      count: null,
+      count: 5,
       tab: 30,
       errored: false,
       loading: true,
@@ -68,5 +81,15 @@ export default {
   .container {
     max-width: 720px;
   }
+}
+.input-container {
+  display: flex;
+  width: 30%;
+}
+.text-input {
+
+}
+.input-label {
+  align-self: center;
 }
 </style>
