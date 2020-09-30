@@ -15,21 +15,16 @@
       </v-tabs>
     </header>
     <div class="input-container">
-      <v-text-field
-          v-model="count"
-          class="text-input"
-      ></v-text-field>
-      <span class="input-label">{{$data.base}}</span>
+      <v-text-field v-model="count" class="text-input"></v-text-field>
+      <span class="input-label">{{ $data.base }}</span>
     </div>
 
     <v-tabs-items v-model="tab">
       <v-tab-item v-for="item in $data.result" :key="item[0]">
         <v-card v-for="item in $data.result" :key="item[0]">
+          <v-card-text> {{ $data.count }} {{ $data.base }} = </v-card-text>
           <v-card-text>
-            {{$data.count}} {{$data.base}} =
-          </v-card-text>
-          <v-card-text>
-            {{ item[1] }}
+            {{ (item[1] * $data.count).toFixed(2)}} {{item[0]}}
           </v-card-text>
         </v-card>
       </v-tab-item>
@@ -52,11 +47,11 @@ export default {
   },
   mounted() {
     const proxyUrl = `https://cors-anywhere.herokuapp.com/`;
-    const targetUrl = `http://api.openrates.io/latest`;
+    const targetUrl = `http://api.openrates.io/latest/`;
     fetch(proxyUrl + targetUrl)
       .then(response => response.json())
       .then(data => {
-        console.log(data)
+        console.log(data);
         this.result = Object.entries(data.rates);
         this.base = data.base;
         if (data.base === "EUR") {
@@ -69,6 +64,11 @@ export default {
         this.errored = true;
       })
       .finally(() => (this.loading = false));
+  },
+  computed: {
+    getCurrency: function(current) {
+      return this.count * current;
+    }
   }
 };
 </script>
@@ -87,7 +87,6 @@ export default {
   width: 30%;
 }
 .text-input {
-
 }
 .input-label {
   align-self: center;
