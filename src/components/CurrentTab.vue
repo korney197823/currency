@@ -9,7 +9,11 @@
       </section>
       <h3>Курс {{ $data.base }} на сегодня</h3>
       <v-tabs v-model="tab" show-arrows>
-        <v-tab v-for="item in $data.result" :key="item[0]">
+        <v-tab
+          v-for="item in $data.result"
+          :key="item[0]"
+          @click="setCurrentCurrency(item[0])"
+        >
           {{ item[0] }}
         </v-tab>
       </v-tabs>
@@ -24,7 +28,7 @@
         <v-card v-for="item in $data.result" :key="item[0]">
           <v-card-text> {{ $data.count }} {{ $data.base }} = </v-card-text>
           <v-card-text>
-            {{ (item[1] * $data.count).toFixed(2)}} {{item[0]}}
+            {{ (item[1] * $data.count).toFixed(2) }} {{ item[0] }}
           </v-card-text>
         </v-card>
       </v-tab-item>
@@ -41,13 +45,13 @@ export default {
       tab: 30,
       errored: false,
       loading: true,
-      base: "",
+      base: "EUR",
       result: []
     };
   },
   mounted() {
     const proxyUrl = `https://cors-anywhere.herokuapp.com/`;
-    const targetUrl = `http://api.openrates.io/latest/`;
+    const targetUrl = `http://api.openrates.io/latest/?base=${this.$data.base}`;
     fetch(proxyUrl + targetUrl)
       .then(response => response.json())
       .then(data => {
@@ -68,6 +72,29 @@ export default {
   computed: {
     getCurrency: function(current) {
       return this.count * current;
+    }
+  },
+  methods: {
+    setCurrentCurrency: function(currency) {
+      console.log(currency);
+      const proxyUrl = `https://cors-anywhere.herokuapp.com/`;
+      const targetUrl = `http://api.openrates.io/latest/?base=${currency}`;
+      fetch(proxyUrl + targetUrl)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          this.result = Object.entries(data.rates);
+          this.base = data.base;
+          if (data.base === "EUR") {
+            this.result.push(["EUR", 1]);
+            this.tab = this.result.length - 1;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          this.errored = true;
+        })
+        .finally(() => (this.loading = false));
     }
   }
 };
