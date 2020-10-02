@@ -25,13 +25,17 @@
 
     <v-tabs-items v-model="tab">
       <v-tab-item v-for="item in $data.result" :key="item[0]">
-        <v-card v-for="item in $data.result" :key="item[0]">
+        <v-card v-for="item in paginatedData" :key="item[0]">
           <v-card-text> {{ $data.count }} {{ $data.base }} = </v-card-text>
           <v-card-text>
             {{ (item[1] * $data.count).toFixed(2) }} {{ item[0] }}
           </v-card-text>
         </v-card>
       </v-tab-item>
+      <div class="button-container">
+        <button @click="prevPage">prev</button>
+        <button @click="nextPage">next</button>
+      </div>
     </v-tabs-items>
   </v-container>
 </template>
@@ -41,6 +45,8 @@ export default {
   name: "CurrentTab",
   data() {
     return {
+      pageNumber: 0,
+      sizePage: 4,
       count: 5,
       tab: 30,
       errored: false,
@@ -72,6 +78,16 @@ export default {
   computed: {
     getCurrency: function(current) {
       return this.count * current;
+    },
+    pageCount: function() {
+      let l = this.result.length;
+      let s = this.sizePage;
+      return Math.ceil(l / s);
+    },
+    paginatedData: function() {
+      const start = this.pageNumber * this.sizePage;
+      const end = start + this.sizePage;
+      return this.result.slice(start, end);
     }
   },
   methods: {
@@ -95,6 +111,12 @@ export default {
           this.errored = true;
         })
         .finally(() => (this.loading = false));
+    },
+    nextPage: function() {
+      this.pageNumber++;
+    },
+    prevPage: function() {
+      this.pageNumber--;
     }
   }
 };
