@@ -33,8 +33,20 @@
         </v-card>
       </v-tab-item>
       <div class="button-container">
-        <button @click="prevPage">prev</button>
-        <button @click="nextPage">next</button>
+        <button
+          class="btn btn-pagination"
+          @click="prevPage"
+          :disabled="pageNumber === 0"
+        >
+          назад
+        </button>
+        <button
+          class="btn btn-pagination"
+          @click="nextPage"
+          :disabled="pageNumber >= pageCount - 1"
+        >
+          далее
+        </button>
       </div>
     </v-tabs-items>
   </v-container>
@@ -122,15 +134,23 @@ export default {
 };
 </script>
 
-<style scoped>
-.container {
+<style>
+.v-main__wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.v-window-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 18px;
+}
+
+.container.container {
+  max-width: 720px;
   padding-top: 0;
 }
-@media (min-width: 720px) {
-  .container {
-    max-width: 720px;
-  }
-}
+
 .input-container {
   display: flex;
   width: 30%;
@@ -139,5 +159,14 @@ export default {
 }
 .input-label {
   align-self: center;
+}
+.btn {
+  width: 112px;
+  height: 34px;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+.btn:disabled,
+.btn[disabled] {
+  background-color: #efefef;
 }
 </style>
