@@ -142,8 +142,10 @@ export default {
 }
 .v-window-item {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   grid-gap: 18px;
+}
+@media (min-width: 500px) {
+  .v-window-item { grid-template-columns: repeat(2, 1fr); }
 }
 
 .container.container {
